@@ -52,7 +52,7 @@ int main()
 	Controller::lookAt(Math::vec3(0.0f));
 	View& lView	= g_manager.addComponent<View>(g_camera, {});
 
-	g_windowManager.init("test");
+	g_windowManager.init("Minecrap");
 	g_inputManager.init(g_windowManager.getWindow());
 
 	Minecrap::Graphics::Renderer l_renderer;
@@ -75,22 +75,17 @@ int main()
 	for (int i = 1; i < C_CHUNK_SIDE; i++){
 
 		if (Math::randf(.0f, 1.0f) > 0.01f)
+		{
 			VoxelUtils::setActive(l_chunk.m_voxels[i + j*C_CHUNK_SIDE + k*C_CHUNK_SIDE*C_CHUNK_SIDE]);
+			if (j > 4)
+				{VoxelUtils::setType(l_chunk.m_voxels[i + j*C_CHUNK_SIDE + k*C_CHUNK_SIDE*C_CHUNK_SIDE], BlockType::sand);}
+			if (j > 8)
+				{VoxelUtils::setType(l_chunk.m_voxels[i + j*C_CHUNK_SIDE + k*C_CHUNK_SIDE*C_CHUNK_SIDE], BlockType::stone);}
+		}
 	}}}
 
-//	VoxelUtils::setInactive(l_chunk.getVoxelRelative(8, 4, 8));
-//	VoxelUtils::setInactive(l_chunk.getVoxelRelative(2, 4, 2));
 
 	createMeshGreedy(l_chunk, l_mesh);
-
-//	for (int i = 0; i < C_CHUNK_VOLUME; i++)
-//		PRINT((VoxelUtils::isActive(l_chunk.m_voxels[i])? "y": "n"));
-
-	std::vector<Graphics::VertexInput> l_data =
-	{
-		{0.0f, 0.0f, 0.0f, 1}, {1.0f, 0.0f, 0.0f, 1},
-		{1.0f, 1.0f, 0.0f, 1}, {0.0f, 1.0f, 0.0f, 1}
-	};
 
 	while (!g_windowManager.shouldDie())
 	{

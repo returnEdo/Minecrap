@@ -72,7 +72,6 @@ void createMeshGreedy(Chunk& t_chunk, Mesh& t_mesh)
 					{
 						l_voxel = 0;
 					}
-
 				}
 			}
 			

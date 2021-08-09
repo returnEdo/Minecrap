@@ -10,16 +10,30 @@ namespace Minecrap
 namespace VoxelUtils
 {
 
-// sign | normal | type | active
-// leading bit = sign then components
-constexpr Voxel SIGN_MASK	= 1 << 7;
-constexpr Voxel X_MASK		= 1 << 6;
-constexpr Voxel Y_MASK		= 1 << 5;
-constexpr Voxel Z_MASK		= 1 << 4;
-constexpr Voxel NORMAL_MASK	= 102;
-constexpr Voxel TYPE_MASK 	= 14;
-constexpr Voxel ACTIVE_MASK	= 1;
 
+#define GET_MASK(t_bit, t_width) (((1 << t_width) - 1) << t_bit) 
+
+// sign | normal | type | active
+constexpr uint32_t ACTIVE_BIT 	= 0;
+constexpr uint32_t TYPE_BIT	= 1;
+constexpr uint32_t NORMAL_BIT	= 6;
+constexpr uint32_t SIGN_BIT	= 8;
+
+constexpr uint32_t ACTIVE_WIDTH	= 1;
+constexpr uint32_t TYPE_WIDTH	= NORMAL_BIT - TYPE_BIT;
+constexpr uint32_t NORMAL_WIDTH	= SIGN_BIT - NORMAL_BIT;
+constexpr uint32_t SIGN_WIDTH	= 1;
+
+constexpr uint32_t ACTIVE_MASK	= GET_MASK(ACTIVE_BIT, ACTIVE_WIDTH);
+constexpr uint32_t TYPE_MASK	= GET_MASK(TYPE_BIT, TYPE_WIDTH);
+constexpr uint32_t NORMAL_MASK	= GET_MASK(NORMAL_BIT, NORMAL_WIDTH);
+constexpr uint32_t SIGN_MASK	= GET_MASK(SIGN_BIT, SIGN_WIDTH);
+
+
+void resetMask(Voxel& t_voxel, uint32_t t_mask)
+{
+	t_voxel &= ~t_mask;
+}
 
 void setActive(Voxel& t_voxel)
 {
@@ -33,12 +47,13 @@ void setInactive(Voxel& t_voxel)
 
 void setType(Voxel& t_voxel, BlockType t_type)
 {
-	t_voxel |= (static_cast<Voxel>(t_type) << 1);
+	resetMask(t_voxel, TYPE_MASK);
+	t_voxel |= (static_cast<Voxel>(t_type) << TYPE_BIT);
 }
 
 BlockType getType(Voxel t_voxel)
 {
-	return static_cast<BlockType>((t_voxel & TYPE_MASK) >> 1);
+	return static_cast<BlockType>((t_voxel & TYPE_MASK) >> TYPE_BIT);
 }
 
 bool areSameType(Voxel t_voxela, Voxel t_voxelb)
@@ -53,24 +68,23 @@ bool isActive(Voxel t_voxel)
 
 void setNormal(Voxel& t_voxel, int* t_normal)
 {
-	t_voxel |= (t_normal[0] << 6);
-	t_voxel |= (t_normal[1] << 5);
-	t_voxel |= (t_normal[2] << 4);
+	resetMask(t_voxel, NORMAL_MASK);
+	t_voxel |= ((t_normal[1] + 2 * t_normal[2]) << NORMAL_BIT);
 }
 
 void setNormalSign(Voxel& t_voxel, int t_positive)
 {
-	t_voxel |= (t_positive << 7);	
+	resetMask(t_voxel, SIGN_MASK);
+	t_voxel |= (t_positive << SIGN_BIT);	
 }
 
 void getNormal(Voxel& t_voxel, int* t_normal)
 {
-	int l_sign = (t_voxel & SIGN_MASK) >> 7;
-	l_sign = (l_sign*2 - 1);
+	t_normal[0] = 0;
+	t_normal[1] = 0;
+	t_normal[2] = 0;
 
-	t_normal[0] = l_sign * ((t_voxel & X_MASK) >> 6);
-	t_normal[1] = l_sign * ((t_voxel & Y_MASK) >> 5);
-	t_normal[2] = l_sign * ((t_voxel & Z_MASK) >> 4);
+	t_normal[(t_voxel & NORMAL_MASK) >> NORMAL_BIT] = 2 * ((t_voxel & SIGN_MASK) >> SIGN_BIT) - 1;
 }
 
 

@@ -11,6 +11,7 @@
 #include "Constants.hpp"
 #include "MathConstants.hpp"
 #include "MathUtils.hpp"
+#include "vec2.hpp"
 #include "vec3.hpp"
 
 extern ecs::Manager 		g_manager;
@@ -26,9 +27,9 @@ namespace Controller
 
 void updateCamera(void)
 {
-
 	static float s_thetay = 0.0f;
 	static float s_thetax = 0.0f;
+	static Math::vec2 s_previousMousePosition { 0.0f, 0.0f };
 
 	Transform& l_transform  = g_manager.getComponent<Transform>(g_camera); 
 	View& l_view		= g_manager.getComponent<View>(g_camera);
@@ -49,6 +50,24 @@ void updateCamera(void)
 
 	if (g_inputManager.isDown(GLFW_KEY_P))		{ glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); }
 	if (g_inputManager.isDown(GLFW_KEY_L))		{ glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); }
+
+	// Mouse rotation
+	Math::vec2 l_deltaMouse = g_inputManager.mMousePosition - s_previousMousePosition;
+
+	// In cam coordinates
+	Math::vec2 l_this { g_inputManager.mMousePosition.x - g_windowManager.mWidth / 2.0f, -g_inputManager.mMousePosition.y + g_windowManager.mHeight / 2.0f };
+	Math::vec2 l_prev { s_previousMousePosition.x - g_windowManager.mWidth / 2.0f, -s_previousMousePosition.y + g_windowManager.mHeight / 2.0f };
+	
+	l_this *= 2.0f * l_view.m_nearPlane * std::atan(l_view.m_fov / 2.0f) / g_windowManager.mWidth;
+	l_prev *= 2.0f * l_view.m_nearPlane * std::atan(l_view.m_fov / 2.0f) / g_windowManager.mWidth;
+
+	Math::vec2 l_deltaC = l_this - l_prev;
+
+	s_thetax -= std::atan(l_deltaC.y / l_view.m_nearPlane)/3.0f;
+	s_thetay += std::atan(l_deltaC.x / l_view.m_nearPlane)/3.0f;
+
+	s_previousMousePosition = g_inputManager.mMousePosition;
+
 
 	s_thetax = Math::clamp<float>(s_thetax, -M_PI/2.0f + C_OFFSET_ANGLE, M_PI/2.0f - C_OFFSET_ANGLE);
 
