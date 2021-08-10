@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <cmath>
 
 #include "vec3.hpp"
@@ -34,5 +35,8 @@ constexpr float C_OFFSET_ANGLE		= M_PI / 16.0f;
 
 // Debugger
 constexpr int C_AVERAGE_WINDOW_WIDTH	= 20;
+
+// ChunkManager
+constexpr int C_MAX_CHUNKS 	= 256;
 
 }

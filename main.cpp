@@ -67,7 +67,9 @@ int main()
 	int l_counter = 0;
 
 	Chunk l_chunk;
+	Chunk l_chunk1;
 	Mesh l_mesh;
+	Mesh l_mesh1;
 
 
 	for (int k = 1; k < C_CHUNK_SIDE; k++){
@@ -84,8 +86,24 @@ int main()
 		}
 	}}}
 
-
 	createMeshGreedy(l_chunk, l_mesh);
+
+	l_chunk1.m_position.x = 16;
+	for (int k = 1; k < C_CHUNK_SIDE; k++){
+	for (int j = 1; j < C_CHUNK_SIDE; j++){
+	for (int i = 1; i < C_CHUNK_SIDE; i++){
+
+		if (Math::randf(.0f, 1.0f) > 0.01f)
+		{
+			VoxelUtils::setActive(l_chunk1.m_voxels[i + j*C_CHUNK_SIDE + k*C_CHUNK_SIDE*C_CHUNK_SIDE]);
+			if (j > 4)
+				{VoxelUtils::setType(l_chunk1.m_voxels[i + j*C_CHUNK_SIDE + k*C_CHUNK_SIDE*C_CHUNK_SIDE], BlockType::sand);}
+			if (j > 8)
+				{VoxelUtils::setType(l_chunk1.m_voxels[i + j*C_CHUNK_SIDE + k*C_CHUNK_SIDE*C_CHUNK_SIDE], BlockType::stone);}
+		}
+	}}}
+
+	createMeshGreedy(l_chunk1, l_mesh1);
 
 	while (!g_windowManager.shouldDie())
 	{
@@ -100,6 +118,7 @@ int main()
 
 		l_renderer.updateUniforms();
 		l_renderer.render(l_mesh.m_vertexData);
+		l_renderer.render(l_mesh1.m_vertexData);
 
 		g_windowManager.update();
 	}

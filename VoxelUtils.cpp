@@ -30,6 +30,11 @@ constexpr uint32_t NORMAL_MASK	= GET_MASK(NORMAL_BIT, NORMAL_WIDTH);
 constexpr uint32_t SIGN_MASK	= GET_MASK(SIGN_BIT, SIGN_WIDTH);
 
 
+void reset(Voxel& t_voxel)
+{
+	t_voxel = 0;
+}
+
 void resetMask(Voxel& t_voxel, uint32_t t_mask)
 {
 	t_voxel &= ~t_mask;

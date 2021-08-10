@@ -25,6 +25,9 @@ using Slice = std::array<Voxel, C_CHUNK_SIDE*C_CHUNK_SIDE>;
 
 void createMeshGreedy(Chunk& t_chunk, Mesh& t_mesh)
 {
+
+	vec3i l_p = t_chunk.m_position;
+
 	for (int d = 0; d < 3; d++)
 	{
 		int u = (d+1) % 3;
@@ -139,10 +142,10 @@ void createMeshGreedy(Chunk& t_chunk, Mesh& t_mesh)
 						du[u] = w;
 						dv[v] = h;
 						
-						t_mesh.addVertex({(float)x[0], (float)x[1], (float)x[2], l_slice[n]});
-						t_mesh.addVertex({(float)(x[0] + du[0]), (float)(x[1] + du[1]), (float)(x[2] + du[2]), l_slice[n]});
-						t_mesh.addVertex({(float)(x[0] + du[0] + dv[0]), (float)(x[1] + du[1] + dv[1]), (float)(x[2] + du[2] + dv[2]), l_slice[n]});
-						t_mesh.addVertex({(float)(x[0] + dv[0]), (float)(x[1] + dv[1]), (float)(x[2] + dv[2]), l_slice[n]});
+						t_mesh.addVertex({(float)(x[0] + l_p.x), (float)(x[1] + l_p.y), (float)(x[2] + l_p.z), l_slice[n]});
+						t_mesh.addVertex({(float)(x[0] + du[0] + l_p.x), (float)(x[1] + du[1] + l_p.y), (float)(x[2] + du[2] + l_p.z), l_slice[n]});
+						t_mesh.addVertex({(float)(x[0] + du[0] + dv[0] + l_p.x), (float)(x[1] + du[1] + dv[1] + l_p.y), (float)(x[2] + du[2] + dv[2] + l_p.z), l_slice[n]});
+						t_mesh.addVertex({(float)(x[0] + dv[0] + l_p.x), (float)(x[1] + dv[1] + l_p.y), (float)(x[2] + dv[2] + l_p.z), l_slice[n]});
 
 						// clear the slice
 						for (int l = 0; l < h; l++)

@@ -18,6 +18,7 @@ enum class BlockType: Voxel
 namespace VoxelUtils
 {
 
+void reset(Voxel& t_voxel);
 void resetMask(Voxel& t_voxel, uint32_t t_mask);
 
 void setActive(Voxel& t_voxel);
