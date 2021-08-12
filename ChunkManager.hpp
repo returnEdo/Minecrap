@@ -27,7 +27,7 @@ using  vec3i_to_id = std::map<vec3i, uint8_t, Compare_vec3i>;
 
 class ChunkManager
 {
-	private:	
+	public:
 
 	std::queue<uint8_t>			m_ids;
 	// -1 because value 255 is reserved 
@@ -38,8 +38,6 @@ class ChunkManager
 
 	std::vector<uint8_t>			m_displayList;
 	std::vector<uint8_t>			m_meshifyList;
-
-	public:
 
 	// For terrain generation
 	IFunctor* 				m_functor { nullptr };
