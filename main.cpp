@@ -69,16 +69,15 @@ int main()
 
 
 	SineFunctor l_functor;
-	l_functor.m_period = 50;
+	l_functor.m_period = 50 + M_PI;
 	l_functor.m_amplitude = 5;
 	ChunkManager l_chunkManager;
-	l_chunkManager.m_functor = &l_functor;
+	l_chunkManager.m_pfunctor = &l_functor;
 
 	while (!g_windowManager.shouldDie())
 	{
 		Controller::updateCamera();
-		l_chunkManager.updateDisplayList();
-		l_chunkManager.updateMesh();
+		l_chunkManager.update();
 
 		if (g_inputManager.isPressed(GLFW_KEY_ESCAPE))
 		{	
@@ -88,11 +87,10 @@ int main()
 		g_windowManager.clear();
 
 		l_renderer.updateUniforms();
-		for (uint8_t l_id: l_chunkManager.m_displayList)
+		for (uint8_t l_index: l_chunkManager.m_renderList)
 		{
-			l_renderer.render(l_chunkManager.m_meshes[l_id].m_vertexData);
+			l_renderer.render(l_chunkManager.m_meshes[l_index].m_vertexData);
 		}
-//		l_renderer.render(l_mesh1.m_vertexData);
 
 		g_windowManager.update();
 	}

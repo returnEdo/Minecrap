@@ -25,7 +25,7 @@ constexpr float C_ASPECT_RATIO	= static_cast<float>(C_WINDOW_WIDTH) / static_cas
 // Chunks
 constexpr int C_CHUNK_SIDE	= 16;
 constexpr int C_CHUNK_VOLUME	= C_CHUNK_SIDE * C_CHUNK_SIDE * C_CHUNK_SIDE;
-constexpr int C_CHUNK_TO_LOAD	= 4;
+constexpr int C_CHUNK_TO_LOAD	= 8;
 
 
 // Controller

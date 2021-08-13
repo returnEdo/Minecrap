@@ -1,6 +1,7 @@
 #pragma once
 
 #include "VoxelUtils.hpp"
+#include "MathUtils.hpp"
 
 namespace Minecrap
 {
@@ -19,6 +20,7 @@ class SineFunctor: public IFunctor
 
 	float m_period 		{ 32.0f };
 	float m_amplitude 	{ 10.0f };
+	float m_probability	{ 0.95f };
 
 	// Surface below sine
 	virtual void evaluate(Voxel& t_voxel, int x, int y, int z) override
@@ -28,7 +30,15 @@ class SineFunctor: public IFunctor
 		if (static_cast<float>(y) < t_value)
 		{
 			VoxelUtils::setActive(t_voxel);
-			VoxelUtils::setType(t_voxel, BlockType::grass);
+
+			if (t_value < 8 and Math::randf(0.0f, 1.0f) < m_probability)
+			{
+				VoxelUtils::setType(t_voxel, BlockType::sand);
+			}
+			else
+			{
+				VoxelUtils::setType(t_voxel, BlockType::grass);
+			}
 		}
 	}
 };

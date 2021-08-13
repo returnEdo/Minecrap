@@ -25,6 +25,7 @@ using Slice = std::array<Voxel, C_CHUNK_SIDE*C_CHUNK_SIDE>;
 
 void createMeshGreedy(Chunk& t_chunk, Mesh& t_mesh)
 {
+	t_mesh.reset();
 
 	vec3i l_p = t_chunk.m_position;
 
