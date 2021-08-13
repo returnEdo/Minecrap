@@ -10,7 +10,18 @@ class IFunctor
 {
 	public:
 
+	virtual ~IFunctor(void) {}
+
 	virtual void evaluate(Voxel& t_voxel, int x, int y, int z) = 0;
+
+	virtual Voxel evaluate(int x, int y, int z)
+	{
+		Voxel l_voxel = 0;
+
+		evaluate(l_voxel, x, y, z);
+
+		return l_voxel;
+	}
 };
 
 
@@ -21,6 +32,8 @@ class SineFunctor: public IFunctor
 	float m_period 		{ 32.0f };
 	float m_amplitude 	{ 10.0f };
 	float m_probability	{ 0.95f };
+
+	virtual ~SineFunctor(void) {}
 
 	// Surface below sine
 	virtual void evaluate(Voxel& t_voxel, int x, int y, int z) override

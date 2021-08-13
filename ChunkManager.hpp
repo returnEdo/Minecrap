@@ -33,6 +33,8 @@ class ChunkManager
 	private:
 
 	bool canDiscard(const vec3i& a, const vec3i& b) const;
+	Chunk* getChunkp(vec3i t_position);
+	Voxel getVoxel(int i, int j, int k);
 
 	public:
 
@@ -49,6 +51,7 @@ class ChunkManager
 	ChunkManager(void);
 
 	void loadChunk(const vec3i& t_position, uint8_t t_id);
+	void loadMesh(uint8_t t_id);
 	void update(void);
 };
 

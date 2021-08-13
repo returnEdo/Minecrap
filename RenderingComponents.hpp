@@ -26,4 +26,13 @@ struct View
 	float	m_alpha 	{ C_ASPECT_RATIO };
 };
 
+
+struct Frustum
+{
+
+	float lofacciodomani;
+
+};
+
+
 }
