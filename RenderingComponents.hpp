@@ -27,12 +27,4 @@ struct View
 };
 
 
-struct Frustum
-{
-
-	float lofacciodomani;
-
-};
-
-
 }

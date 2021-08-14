@@ -173,4 +173,5 @@ bool nonNegative(const vec3& a){
 	return (a.x >= 0.0 and  a.y >= 0.0 and a.z >= 0.0);
 }
 
+
 };

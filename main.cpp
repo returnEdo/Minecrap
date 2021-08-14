@@ -16,6 +16,7 @@
 #include "IFunctor.hpp"
 
 #include "RenderingComponents.hpp"
+#include "Frustum.hpp"
 #include "Manager.hpp"
 
 #include "Controller.hpp"
@@ -51,7 +52,8 @@ int main()
 										Math::vec3(0.0f, 0.0f, 40.0f)
 									 });		
 	Controller::lookAt(Math::vec3(0.0f));
-	View& lView	= g_manager.addComponent<View>(g_camera, {});
+	View& lView		= g_manager.addComponent<View>(g_camera, {});
+	Frustum& l_frustum	= g_manager.addComponent<Frustum>(g_camera, {});
 
 	g_windowManager.init("Minecrap");
 	g_inputManager.init(g_windowManager.getWindow());

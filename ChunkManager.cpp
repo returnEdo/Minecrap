@@ -1,6 +1,7 @@
 #include "ChunkManager.hpp"
 
 #include "RenderingComponents.hpp"
+#include "Frustum.hpp"
 #include "Entity.hpp"
 #include "Manager.hpp"
 #include "Macros.hpp"
@@ -82,7 +83,11 @@ void ChunkManager::update(void)
 	// Clear render list
 	m_renderList.clear();
 
-	Transform& l_camera = g_manager.getComponent<Transform>(g_camera);
+	Transform& l_camera 	= g_manager.getComponent<Transform>(g_camera);
+	View& l_view		= g_manager.getComponent<View>(g_camera);
+	Frustum& l_frustum	= g_manager.getComponent<Frustum>(g_camera);
+
+	updateFrustum(l_camera, l_view, l_frustum);
 
 	vec3i l_camerai {
 		static_cast<int>(std::floor(l_camera.mPosition.x / C_CHUNK_SIDE)) * C_CHUNK_SIDE,
@@ -95,9 +100,16 @@ void ChunkManager::update(void)
 	{
 		for (int i = -C_CHUNK_TO_LOAD/2; i < C_CHUNK_TO_LOAD/2; i++)
 		{
+
 			// Find the position of the chunk
 			vec3i l_positioni = add(l_camerai, {i * C_CHUNK_SIDE, 0, k * C_CHUNK_SIDE});
 
+			if (not isBoundingBoxIntersecting(l_frustum, l_positioni.x, l_positioni.y, l_positioni.z,
+								     C_CHUNK_SIDE, C_CHUNK_SIDE, C_CHUNK_SIDE))
+			{
+				continue;
+			}
+								    	
 			// Find whether it is loaded
 			vec3i_to_id::iterator l_iterator = m_positionToId.find(l_positioni);
 			

@@ -47,7 +47,7 @@ class Rotor
 	inline float getNorm(void) const	{ return std::sqrt(a*a + b*b + c*c + d*d); }
 	void normalize(void);
 	
-	Math::mat3 getMatrixForm(void);
+	Math::mat3 getMatrixForm(void) const;
 	
 	friend std::ostream& operator <<(std::ostream& tOs, Rotor& tRotor);
 };

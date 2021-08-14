@@ -48,7 +48,7 @@ Rotor::Rotor(const Math::mat3& tR)
 
 
 
-Math::mat3 Rotor::getMatrixForm(void)
+Math::mat3 Rotor::getMatrixForm(void) const
 {
 	Math::mat3 lMat;
 
