@@ -69,6 +69,11 @@ void Shader::findUniformLocations(const std::vector<std::string>& tUniforms)
 	}
 };
 
+void Shader::setUniform(const std::string& t_uniform, int t_value)
+{
+	glUniform1i(mUniformNameToId[t_uniform], t_value);
+}
+
 void Shader::setUniform(const std::string& tUniform, float tValue)
 {
 	glUniform1f(mUniformNameToId[tUniform], tValue);

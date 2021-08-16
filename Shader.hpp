@@ -34,6 +34,7 @@ class Shader
 	void bind(void) const;
 
 	void findUniformLocations(const std::vector<std::string>& tUniforms);
+	void setUniform(const std::string& t_uniform, int t_value);
 	void setUniform(const std::string& tUniform, float tValue);
 	void setUniform(const std::string& tUniform, Math::vec2& tValue);
 	void setUniform(const std::string& tUniform, Math::vec3& tValue);

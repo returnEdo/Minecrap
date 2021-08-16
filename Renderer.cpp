@@ -80,6 +80,8 @@ void Renderer::destroy(void)
 {
 	glDeleteVertexArrays(1, &mVertexArrayId);
 	glDeleteBuffers(1, &mVertexBufferId);
+
+	mShader.destroy();
 }
 
 
