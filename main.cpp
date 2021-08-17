@@ -67,6 +67,9 @@ int main()
 	Graphics::Renderer l_renderer;
 	l_renderer.init();
 
+	Graphics::FrameBuffer l_frameBuffer;
+	l_frameBuffer.init();
+
 	// Create a chunk
 	float l_theta 	= 0.0f;
 	float l_dt	= 0.1f;
@@ -82,55 +85,6 @@ int main()
 	ChunkManager l_chunkManager;
 	l_chunkManager.m_pfunctor = &l_functor;
 
-//	while (!g_windowManager.shouldDie())
-//	{
-//		Controller::updateCamera();
-//		l_chunkManager.update();
-//
-//		if (g_inputManager.isPressed(GLFW_KEY_ESCAPE))
-//		{	
-//			g_windowManager.closeWindow();		
-//		};
-//
-//		g_windowManager.clear();
-//
-//		l_renderer.updateUniforms();
-//		for (uint8_t l_index: l_chunkManager.m_renderList)
-//		{
-//			l_renderer.render(l_chunkManager.m_meshes[l_index].m_vertexData);
-//		}
-//
-//		g_windowManager.update();
-//	}
-
-	unsigned int m_frameBuffer;
-	glGenFramebuffers(1, &m_frameBuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);
-	// create a color attachment texture
-	unsigned int m_color;
-	glGenTextures(1, &m_color);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_color);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, g_windowManager.mWidth, g_windowManager.mHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, C_WINDOW_WIDTH, C_WINDOW_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_color, 0);
-	// create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
-	unsigned int m_depth;
-	glGenTextures(1, &m_depth);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, m_depth);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, C_WINDOW_WIDTH, C_WINDOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depth, 0);
-	// now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		PRINT("NOT ocmpolete");
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-
 	while (!g_windowManager.shouldDie())
 	{
 		Controller::updateCamera();
@@ -141,13 +95,8 @@ int main()
 			g_windowManager.closeWindow();		
 		};
 
-//		g_windowManager.clear();
-
 		// First pass: offscreen rendering
-		glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);
-		glEnable(GL_DEPTH_TEST);
-		glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		l_frameBuffer.prepareForRendering();
 		l_renderer.updateUniforms();
 		for (uint8_t l_index: l_chunkManager.m_renderList)
 		{
@@ -155,17 +104,18 @@ int main()
 		}
 
 		// Second pass: render to quad
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		l_frameBuffer.bind(false);
 		glDisable(GL_DEPTH_TEST);
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		l_quadRenderer.render(m_color);//, l_frameBuffer.getDepthTextureId());
+		l_quadRenderer.render(l_frameBuffer.getColorTextureId(), l_frameBuffer.getDepthTextureId());
 
 		g_windowManager.update();
 	}
 
 	l_renderer.destroy();
 	l_quadRenderer.destroy();
+	l_frameBuffer.destroy();
 
 	g_windowManager.destroy();
 	return 0;

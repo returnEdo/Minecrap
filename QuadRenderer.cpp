@@ -22,12 +22,11 @@ void QuadRenderer::init(void)
 	unsigned int l_index[] = { 0, 1, 2, 0, 2, 3 };
 
 	m_shader.init(C_QUAD_VERTEX, C_QUAD_FRAGMENT);
-	m_shader.findUniformLocations({"s_texture0"});
-	//m_shader.findUniformLocations({"s_texture0", "s_texture1"});
+	m_shader.findUniformLocations({"s_texture0", "s_texture1"});
 
 	// Set the texture units
 	m_shader.setUniform("s_texture0", 0);
-//	m_shader.setUniform("s_texture0", 1);
+	m_shader.setUniform("s_texture0", 1);
 	
 	glGenVertexArrays(1, &m_vertexArray);
 	glGenBuffers(1, &m_vertexBuffer);
@@ -45,14 +44,17 @@ void QuadRenderer::init(void)
 	glEnableVertexAttribArray(0);
 }
 
-void QuadRenderer::render(unsigned int t_texture0)//, unsigned int t_texture1)
+void QuadRenderer::render(unsigned int t_texture0, unsigned int t_texture1)
 {
 	m_shader.bind();
 
+	m_shader.setUniform("s_texture0", 0);
+	m_shader.setUniform("s_texture1", 1);
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, t_texture0);
-//	glActiveTexture(GL_TEXTURE1);
-//	glBindTexture(GL_TEXTURE_2D, t_texture1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, t_texture1);
 		
 	glBindVertexArray(m_vertexArray);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);

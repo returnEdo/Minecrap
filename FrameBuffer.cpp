@@ -12,59 +12,59 @@ namespace Minecrap
 namespace Graphics
 {
 
-template <Attachment t_attachment>
-unsigned int FrameBuffer::generateTexture(void) const
+void FrameBuffer::generateTexture(unsigned int& t_id, int t_type)
 {
-	static unsigned int s_counter = 0;
-
-	unsigned int l_id;
-
-	glGenTextures(1, &l_id);
-	glActiveTexture(GL_TEXTURE0 + s_counter);
-	glBindTexture(GL_TEXTURE_2D, l_id);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, (int)t_attachment, g_windowManager.mWidth, g_windowManager.mHeight, 0, (int)t_attachment, GL_UNSIGNED_BYTE, nullptr);
+	glGenTextures(1, &t_id);
+	glBindTexture(GL_TEXTURE_2D, t_id);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	s_counter++;
-
-	return l_id;
+	glTexImage2D(GL_TEXTURE_2D, 0, t_type, g_windowManager.mWidth, g_windowManager.mHeight, 0, t_type, GL_UNSIGNED_BYTE, NULL);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-FrameBuffer::~FrameBuffer(void)
+void FrameBuffer::destroy(void)
 {
 	glDeleteFramebuffers(1, &m_id);
 }
 
 void FrameBuffer::init(void)
 {
-	glGenFramebuffers(1, &m_id);
-	bind();
-
-	unsigned int m_colorid = generateTexture<Attachment::COLOR>();
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_colorid, 0);
-	unsigned int m_depthid = generateTexture<Attachment::DEPTH>();
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthid, 0);
+	generateTexture(m_colorid, GL_RGBA);
+	generateTexture(m_depthid, GL_DEPTH_COMPONENT);
 	
-	// check attachments are ok
-	ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Frame buffer not complete. Check your attachments!!");
+	glGenFramebuffers(1, &m_id);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_id);
 
-	bind(0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_colorid, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthid, 0);
+
+	ASSERT((GL_FRAMEBUFFER_COMPLETE == glCheckFramebufferStatus(GL_FRAMEBUFFER)),
+		"FrameBuffer is not complete!! Check your attachments!!");
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void FrameBuffer::bind(bool t_bind)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, (t_bind? m_id: 0));
+}
 
-	if (t_bind)
-	{
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, m_colorid);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, m_depthid);
-	}
+void FrameBuffer::prepareForRendering(void) 
+{
+	bind();
+	
+	// Activate the textures
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_colorid);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, m_depthid);
+
+	glEnable(GL_DEPTH_TEST);
+	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 }
 
 }

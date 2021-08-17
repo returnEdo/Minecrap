@@ -9,31 +9,25 @@ namespace Minecrap
 namespace Graphics
 {
 
-enum class Attachment: int
-{
-	COLOR = GL_RGB,
-	DEPTH = GL_DEPTH_COMPONENT
-};
-
 class FrameBuffer
 {
 	private:
 
 	unsigned int m_id;
 
-	unsigned int m_colorid	{ 0 };
-	unsigned int m_depthid	{ 0 };
+	unsigned int m_colorid;
+	unsigned int m_depthid;
 	
-	template <Attachment t_attachment>
-	unsigned int generateTexture(void) const;
+	void generateTexture(unsigned int& t_id, int t_type);
 
 	public:
 	
-	~FrameBuffer(void);
 	
 	void init(void);
+	void destroy(void);
 	
 	void bind(bool t_bind = true);
+	void prepareForRendering(void);
 
 	inline unsigned int getColorTextureId(void)	{ return m_colorid; }
 	inline unsigned int getDepthTextureId(void)	{ return m_depthid; }

@@ -30,7 +30,7 @@ class QuadRenderer
 	
 	void init(void);
 
-	void render(unsigned int t_texture0);//, unsigned int t_texture1);
+	void render(unsigned int t_texture0, unsigned int t_texture1);
 
 	void destroy(void);
 };
