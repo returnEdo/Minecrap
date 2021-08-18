@@ -186,7 +186,8 @@ void ChunkManager::loadMesh(uint8_t t_id)
 
 		int x[3] = {0, 0, 0};
 
-		for (x[d] = -1; x[d] < C_CHUNK_SIDE;)
+		for (x[d] = 0; x[d] < C_CHUNK_SIDE;)
+		//for (x[d] = -1; x[d] < C_CHUNK_SIDE;)
 		{
 			Slice l_slice;
 
